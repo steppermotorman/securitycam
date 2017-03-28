@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+	<head>
+		<title>NASA Camera Pedestal Controller</title>
+		<style type="text/css">
+			#container {
+				/* center the content */
+				margin: 0 auto;	
+				text-align: center;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="container">
+			<img src="http://66.66.159.163:8081" />
+			<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script><br />
+			<button onclick="servos.move('P', -10)">Left</button>
+			<button onclick="servos.move('P', 10)">Right</button>
+			<button onclick="servos.move('T', 10)">Up</button>
+			<button onclick="servos.move('T', -10)">Down</button>
+		</div>
+	</body>
+	<script>
+		var servos;
+		$( document ).ready(function() {
+			servos = moveServos();
+		});
+		function moveServos() {
+			// Store some settings, adjust to suit
+			var panPos = 70, 
+				tiltPos = 90, 
+				tiltMax = 170, 
+				tiltMin = 45, 
+				panMax = 170, 
+				panMin = 20;
+			return {
+				move:function(servo, adjustment) {
+					var value;
+					if(servo == 'P') {
+						if(!((panPos >= panMax && adjustment > 0) || (panPos <= panMin && adjustment < 0))) {
+							// Still within allowed range, "schedule" the movement
+							panPos += adjustment;
+						}
+						value = panPos + 'P';
+					}
+					else if(servo == 'T') {
+						if(!((tiltPos >= tiltMax && adjustment > 0) || (tiltPos <= tiltMin && adjustment < 0))) {
+							// Still within allowed range, "schedule" the movement
+							tiltPos += adjustment;
+						}
+						value = tiltPos + 'T';
+					}
+					// Use AJAX to actually move the servos
+					$.get('http://192.168.0.31/servos.rpy?value=' + value);
+				},
+			}
+		}
+	</script>
+</html>
