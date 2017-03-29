@@ -51,7 +51,7 @@
 						value = tiltPos + 'T';
 					}
 					// Use AJAX to actually move the servos
-					$.get('http://192.168.0.31/servos.rpy?value=' + value);
+					$.get('/servos.rpy?value=' + value);
 				},
 			}
 		}
